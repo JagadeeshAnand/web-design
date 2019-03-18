@@ -1,0 +1,2048 @@
+﻿<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <link rel="stylesheet" href="style/fonts.css" />
+    <link rel="stylesheet" href="style/ScoreChartStyle.css" />
+
+    <script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="js/jquery.autocomplete.js"></script>
+
+    <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://d3js.org/queue.v1.min.js"></script>
+    <script src="js/d3-tip.js"></script>
+
+    <!-- Bootstrap core CSS -->
+    <link href="style/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="style/resume.min.css" rel="stylesheet" />
+
+    <!-- This is the Javascript file of jqGrid -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqgrid/4.6.0/js/jquery.jqGrid.min.js"></script>
+    <!-- This is the localization file of the grid controlling messages, labels, etc.
+    <!-- We support more than 40 localizations -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqgrid/4.6.0/js/i18n/grid.locale-en.js"></script>
+    <!-- A link to a jQuery UI ThemeRoller theme, more than 22 built-in and many more custom -->
+    <link rel="stylesheet" type="text/css" media="screen" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/css/jquery-ui.min.css" />
+    <!-- The link to the CSS that the grid needs -->
+    <link rel="stylesheet" type="text/css" media="screen" href="https://cdnjs.cloudflare.com/ajax/libs/jqgrid/4.6.0/css/ui.jqgrid.css" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/themes/ui-darkness/theme.min.css" />
+
+
+    <style>
+
+
+        .d3-tip {
+            line-height: 1;
+            padding: 6px;
+            background: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+            /* Creates a small triangle extender for the tooltip */
+            .d3-tip:after {
+                box-sizing: border-box;
+                display: inline;
+                font-size: 10px;
+                width: 100%;
+                line-height: 1;
+                color: rgba(0, 0, 0, 0.8);
+                content: "\25BC";
+                position: absolute;
+                text-align: center;
+            }
+
+            /* Style northward tooltips specifically */
+            .d3-tip.n:after {
+                margin: -2px 0 0 0;
+                top: 100%;
+                left: 0;
+            }
+
+
+        .progress-meter .background {
+            fill: #ccc;
+        }
+
+        .progress-meter .foreground {
+            fill: rgb(192, 192, 192);
+        }
+
+        .progress-meter text {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-size: 24px;
+            font-weight: bold;
+        }
+    </style>
+
+
+    <style>
+        body,
+        html {
+            height: 100%;
+        }
+
+        main {
+            height: 100%;
+            background: #eee;
+        }
+
+            main:after {
+                height: 200px;
+                background: #009688;
+                content: "";
+                width: 100%;
+                position: fixed;
+                top: 0;
+                width: 100%;
+                /*z-index: -1;*/
+            }
+
+        .main-Sec {
+            height: calc(100% - 0px);
+            /*top: 19px;
+        width: 1396px;*/
+            position: relative;
+            background: #f7f9fa;
+            z-index: 999;
+            overflow: auto;
+        }
+
+        .inner-Div {
+            /*width: 70%;
+        margin: auto;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        -ms-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+        text-align:center;*/
+            width: 50%;
+            margin: auto;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            /* margin: auto; */
+            -ms-transform: translate(-50%, -50%);
+            /* transform: translate(-50%, -50%); */
+            text-align: center;
+            display: table;
+        }
+
+        .right-Side {
+            position: relative;
+            height: calc(100vh - 0px);
+        }
+
+        .left-Side {
+            height: calc(100vh - 3px);
+            background: #fff;
+            border-left: 1px solid #eee;
+            overflow: hidden;
+        }
+
+        .header-sec {
+            background: #eee;
+            padding: 10px 15px;
+            display: flex;
+        }
+
+        .logo-img {
+            width: 40px;
+            height: 40px;
+            background: #ccc;
+            border-radius: 50%;
+            display: block;
+        }
+
+        .glyphicon {
+            margin: 10px;
+            color: #9c9c9c;
+        }
+
+        .notofication .logo-img {
+            background: #fff;
+        }
+
+        .notofication {
+            background: #9de1fe;
+            padding: 10px 15px;
+            display: flex;
+        }
+
+        .search-Div {
+            background: #eee;
+            position: relative;
+            padding: 10px 15px;
+            margin-bottom: 1px;
+        }
+
+        .input-field {
+            width: 100%;
+            border: none;
+            height: 30px;
+            border-radius: 20px;
+            padding: 10px 10px 10px 53px;
+            color: #b0b0b0;
+        }
+
+        .list-Div {
+            padding: 0px 15px 10px;
+            overflow: auto;
+            height: calc(100% - 173px);
+        }
+
+            .list-Div .logo-img {
+                float: left
+            }
+
+            .list-Div .header {
+            }
+
+        .padding-left-53 {
+            padding-left: 53px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+
+        .header span.time {
+            float: right;
+        }
+
+        .comments span.badge {
+            float: right;
+            background: #4CAF50;
+        }
+
+        .friendsList {
+            padding-top: 5px;
+        }
+
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            border-radius: 10px;
+            box-shadow: none;
+            border: 1px solid #eeeeee;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            border-radius: 10px;
+            background: #ccc;
+            box-shadow: none;
+            border: 1px solid #bdbbbb;
+        }
+
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+            .switch input {
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+            .slider:before {
+                position: absolute;
+                content: "";
+                height: 26px;
+                width: 26px;
+                left: 4px;
+                bottom: 4px;
+                background-color: #fff;
+                -webkit-transition: .4s;
+                transition: .4s;
+            }
+
+        input:checked + .slider {
+            background-color: #fff;
+        }
+
+        input:focus + .slider {
+            box-shadow: 0 0 1px transparent;
+        }
+
+        input:checked + .slider:before {
+            -webkit-transform: translateX(26px);
+            -ms-transform: translateX(26px);
+            transform: translateX(26px);
+            background: #9de1fe;
+        }
+
+        /* Rounded sliders */
+        .slider.round {
+            border-radius: 34px;
+        }
+
+            .slider.round:before {
+                border-radius: 50%;
+            }
+
+        #rightSide {
+            width: 100%;
+            /*padding-right:350px;*/
+            transition: .6s;
+        }
+
+        #leftSide {
+            width: 300px;
+            position: fixed;
+            box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.11), 0 6px 20px 0 rgba(0, 0, 0, 0.08);
+            right: -300px;
+            transition: .6s;
+            top: 0px;
+        }
+
+        .Hover-Me {
+            position: absolute;
+            left: -71px;
+            z-index: 999;
+            box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.08), 0 6px 20px 0 rgba(0, 0, 0, 0.09);
+            padding: 10px 20px;
+            background: #fff;
+            transform: rotate(90deg);
+            z-index: 99999;
+            top: 90px;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+            .Hover-Me:hover {
+                background: #eee;
+            }
+    </style>
+</head>
+<body>
+
+    <script>
+        if (window.location.host == "demo.spinecapital.com") {
+            document.write('<div style="position:absolute;top:0;"><img src="http://demo.spinecapital.com/UserTrack/Detail.aspx?md=wallchart" style="height:1px;width:1px;" /></div>');
+        }
+    </script>
+
+    <script src="js/chartlib.js?bld=<%=ConfigurationManager.AppSettings[" buildno"].ToString() %>"></script>
+
+    <table style="border:0px solid red;width:100%;height:100%;">
+        <tr style="vertical-align:top">
+            <td>
+                <div id="Container">
+                    <svg id="svgContainer" width="100%" height="100%"></svg>
+                </div>
+            </td>
+            <td style="width:300px;display:none;">
+                <table>
+                    <tr>
+                        <td>  <div style="width:300px;border:1px solid red;height:100%;">dfsd</div></td>
+                    </tr>
+                    <tr>
+                        <td> <div style="height:200px;border:1px solid red;"> </div></td>
+                    </tr>
+                </table>
+
+            </td>
+        </tr>
+
+
+    </table>
+    <div class="unpriced">
+        <div style="margin-left: 70px; float: left; padding-top: 10px; width: 250px;">
+            <div style="font-size: 18px;">ALPHA</div>
+            <div style="color: #00b9ff;">BUILDING BLOCKS</div>
+        </div>
+        <div style="float: right; padding: 15px;">
+            <img id="btnFullscreen" src="icons/fullscreen.png" height="30px" width="30px" />
+        </div>
+        <div style="float: right; padding: 20px;display:none;">
+            <img id="btnSearch" src="icons/search.png" height="20px" width="20px" />
+        </div>
+        <div id="selLblCont" style="float: right; padding: 15px; color: #fff; font-weight: normal; display: none;">
+            <div id="selLblClose" style="width: 40px; border: 0px solid red; float: left; padding: 8px; cursor: pointer;">
+                <img src="icons/close-button.png" height="20px" width="20px" />
+            </div>
+            <div id="selLblTxt" style="float: left; border: 0px solid red; font-size: 20px;"></div>
+        </div>
+    </div>
+    <div class="leftMenuNav" onclick="menuclick()">
+        <div class="bar1"></div>
+        <div class="bar2"></div>
+        <div class="bar3"></div>
+    </div>
+
+
+    <div id="serachpop">
+        <div style="margin: auto; width: 50px; padding: 10px;">
+            <img id="btnPopClose" src="icons/close-button.png" height="30px" width="30px" />
+        </div>
+        <div style="width: 500px; margin: auto; padding-top: 100px; vertical-align: bottom">
+            <div class="autocomplete" style="height: 50px; width: 500px;">
+                <div style="float: left; width: 30px;">
+                    <img src="icons/search.png" height="20px" width="20px" />
+                </div>
+                <div style="float: left; width: 400px; padding-right: 10px;">
+                    <input id="hdnSelData" type="hidden" /><input type="text" name="currency" class="biginput" id="autocomplete">
+                </div>
+                <div style="float: right; width: 30px;">
+                    <img id="btnSearchClick" src="icons/arrow-circle-outline.png" style="width: 25px; height: 25px; cursor: pointer;" />
+                </div>
+            </div>
+        </div>
+        <div id="outputbox">
+            <p id="outputcontent"></p>
+        </div>
+    </div>
+
+    <div id="menuwrapper" class="menuwrapper">
+        <div class="leftMenuNav" onclick="menuclose()" style="z-index: 999999999999">
+            <div class="bar11"></div>
+            <div class="bar2" style="background-color: #0166ff"></div>
+            <div class="bar31 closetxt">close</div>
+        </div>
+    </div>
+
+
+    <div class="" style="padding:0px;" id="leftSide">
+
+        <div class="left-Side" style="">
+            <span class="Hover-Me" id="openSidePanel">Options</span>
+            <header class="header-sec">
+                <div style="flex-grow:1">
+                    <span class="logo-img">
+                        <img src="https://web.whatsapp.com/pp?e=https%3A%2F%2Fpps.whatsapp.net%2Fv%2Ft61.11540-24%2F53599983_392145158031025_1719857621470543872_n.jpg%3Foe%3D5C8D4E62%26oh%3D28e4f81d85e9974782cbc772aae96f6c&t=s&u=917702667797%40c.us&i=1552188055"
+                             style="width: 40px;
+						border-radius: 50%;">
+                    </span>
+                </div>
+                <div style="flex:none">
+                    <div class="btn-group">
+
+                        <a href="#" class="dropdown-toggle dropdown-toggle-split" data-toggle="dropdown">
+                            <span class="glyphicon glyphicon-refresh" data-toggle="dropdown"></span>
+                        </a>
+
+                        <!-- <div class="dropdown-menu"> -->
+                        <!-- <a class="dropdown-item" href="#">Link 1</a> -->
+                        <!-- <a class="dropdown-item" href="#">Link 2</a> -->
+                        <!-- </div> -->
+                    </div>
+
+                    <div class="btn-group">
+                        <a href="#" class="dropdown-toggle dropdown-toggle-split" data-toggle="dropdown">
+                            <span class="glyphicon glyphicon-comment"></span>
+                        </a>
+
+                        <!-- <div class="dropdown-menu"> -->
+                        <!-- <a class="dropdown-item" href="#">Link 1</a> -->
+                        <!-- <a class="dropdown-item" href="#">Link 2</a> -->
+                        <!-- </div> -->
+                    </div>
+
+                    <div class="btn-group">
+                        <a href="#" class="dropdown-toggle dropdown-toggle-split" data-toggle="dropdown">
+                            <span class="glyphicon glyphicon-option-vertical"></span>
+                        </a>
+                        <!-- <div class="dropdown-menu"> -->
+                        <!-- <a class="dropdown-item" href="#">Link 1</a> -->
+                        <!-- <a class="dropdown-item" href="#">Link 2</a> -->
+                        <!-- </div> -->
+                    </div>
+                </div>
+
+            </header>
+            <div class="notofication">
+                <div style="">
+                    <!-- <span class="logo-img"><span class="glyphicon glyphicon-bell" style="color:#9de1fe;top: 3px; -->
+                    <!-- right: -2px;"></span> -->
+                    <!-- </span> -->
+                    <label class="switch">
+                        <input type="checkbox" id="switchbox">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div style="padding:7px 15px">
+                    <span style="color: #616161; font-size: 16px; font-weight: bolder;" id="textPinchange">Unpin</span>
+
+                </div>
+            </div>
+            <!--<div class="search-Div">
+                <span class="glyphicon glyphicon-search" style="    position: absolute;
+                    top: 9px;"></span>
+                <input type="text" class="input-field" placeholder="search here" style="">
+            </div>-->
+            <table id="jqGrid"></table>
+            <div id="jqGridPager"></div>
+        </div>
+    </div>
+    <script>
+
+        var fURL = "data/";
+
+        var fDts, fScore, fInd, fComp;
+
+        var getQueryString = function (field, url) {
+            var href = url ? url : window.location.href;
+            var reg = new RegExp('[?&]' + field + '=([^&#]*)', 'i');
+            var string = reg.exec(href);
+            return string ? string[1] : null;
+        };
+
+        var qrst = getQueryString('score');
+
+        if (qrst == "gbl") {
+            fDts = fURL + "gbldates01.csv";
+            fScore = fURL + "gblscore03.csv";
+            fInd = fURL + "industry.csv";
+            fComp = fURL + "gblcompanies02.csv";
+        }
+        if (qrst == "us") {
+            fDts = fURL + "dates01.csv";
+            fScore = fURL + "usscore01.csv";
+            fInd = fURL + "industry.csv";
+            fComp = fURL + "companies01.csv";
+        }
+        else { //if (qrst == "all")
+            fDts = fURL + "dates01.csv";
+            fScore = fURL + "abbscore.csv";
+            fInd = fURL + "industry.csv";
+            fComp = fURL + "allcompanies.csv";
+        }
+
+        var ContainerDiv = document.getElementById("svgContainer");
+
+        var svgMain = d3.select(ContainerDiv)
+            .append("svg")
+            .attr("preserveAspectRatio", "xMidYMid meet")
+            .attr("viewBox", "0 0 1600 900")
+
+
+        var gchart = svgMain.append("g").attr("id", "gchart");
+
+
+
+
+        var greyBgCircle = createGreyCrl(gchart); // Create Grey circle
+
+        var gradialAxis = gchart.append('g')
+            .attr("transform", "translate(800 , 450)")
+
+        gradialAxis.append('circle')
+            .attr('r', 500)
+            .style("fill", "rgba(0,0,0,0)")
+            .style("stroke-width", 1)
+            .style("stroke", "#eee");
+
+
+
+        var chartMain = createMainChart(gchart); // Create Main Chart circle
+
+
+        var gblsectorId;
+        var glbSelComp;
+        var glbSelIndex;
+        var gblSelId;
+        var gblISindex = true;
+
+        fScore = "http://demo.spinecapital.com/ScoresData/api/Scores/GetDisScores/2018/3/GLOBAL";
+
+        /*
+        queue()
+            .defer(d3.json, fScore)
+            .defer(d3.csv, fInd)
+            .defer(d3.csv, fComp)
+            .defer(d3.csv, fDts)
+            .await(lodData)
+
+
+        function lodData(error,dat1,dat2,dat3,dat4)
+        {
+            if (error) throw error;
+
+            console.log(dat1);
+            console.log(dat2);
+            console.log(dat3);
+            console.log(dat4);
+
+        }
+        */
+
+
+        /*progress bar
+
+        var width = 960,
+            height = 500,
+            twoPi = 2 * Math.PI,
+            progress = 0,
+            total = 407234, // must be hard-coded if server doesn't report Content-Length
+            formatPercent = d3.format(".0%");
+
+        var arc = d3.arc()
+            .startAngle(0)
+            .innerRadius(220)
+            .outerRadius(240);
+
+        var meter = chartMain.append("g")
+            .attr("class", "progress-meter");
+        meter.append("path")
+            .attr("class", "background")
+            .attr("d", arc.endAngle(twoPi));
+        var foreground = meter.append("path")
+            .attr("class", "foreground");
+        var text = meter.append("text")
+            .attr("text-anchor", "middle")
+            .attr("dy", ".35em");
+        */
+
+        function loader(config) {
+            return function () {
+                var radius = Math.min(config.width, config.height) / 2;
+                var tau = 2 * Math.PI;
+
+                var arc = d3.arc()
+                    .innerRadius(radius * 0.5)
+                    .outerRadius(radius * 0.505)
+                    .startAngle(0);
+
+                var svg = d3.select(config.container).append("g")
+                    .attr("id", config.id)
+                    .attr("width", config.width)
+                    .attr("height", config.height)
+                console.log(svg)
+
+                var background = svg.append("path")
+                    .datum({ endAngle: 0.33 * tau })
+                    .style("fill", "#00b9ff")
+                    .attr("d", arc)
+                    .call(spin, 1500)
+
+                function spin(selection, duration) {
+                    selection.transition()
+                        .ease(d3.easeLinear)
+                        .duration(duration)
+                        .attrTween("transform", function () {
+                            return d3.interpolateString("rotate(0)", "rotate(360)");
+                        });
+
+                    setTimeout(function () { spin(selection, duration); }, duration);
+                }
+
+                function transitionFunction(path) {
+                    path.transition()
+                        .duration(7500)
+                        .attrTween("stroke-dasharray", tweenDash)
+                        .each("end", function () { d3.select(this).call(transition); });
+                }
+
+            };
+        }
+
+        var myLoader = loader({ width: 980, height: 980, container: "#crlChart", id: "loader" });
+        myLoader();
+
+        /*progress bar*/
+
+
+
+
+
+        d3.csv(fInd, function (dbGICS) {
+            d3.csv(fComp, function (dbCompany) {
+                d3.csv(fDts, function (dbRebalance) {
+                    d3.json(fScore)
+                        .on("progress", function (d) {
+
+                            //console.log(d);
+                            /*
+                            var i = d3.interpolate(progress, d.loaded / total);
+                            d3.transition().tween("progress", function () {
+                                return function (t) {
+                                    progress = i(t);
+                                    foreground.attr("d", arc.endAngle(twoPi * progress))
+                                    .style("fill", function () {
+                                        // not necessary -- just makes the arc darker as it progresses
+                                        var gray = Math.floor(12 - (12 * progress)) * 16;
+                                        return "rgb(" + gray + "," + gray + "," + gray + ")";
+                                    });
+                                    text.text(formatPercent(progress));
+                                };
+                            });
+                            */
+                        })
+                        .on("error", function (error) { alert("failure!", error); })
+                        .get(function (dbScore) {
+                            d3.select("#loader").style("display", "none")
+                            //  meter.transition().attr("transform", "scale(0)");
+
+                            var gSelDate, gscoreByDates;
+                            // console.log(dbScore);
+                            // gSelDate = Math.max.apply(Math, dbRebalance.map(function (d) { return d.date; }));
+                            gSelDate = "20180904";
+
+                            gscoreByDates = d3.nest().key(function (d) { return d.tradeDate; }).entries(dbScore);  // Nest Score by Date key
+
+                            var yrCircle = createReblanceDates(gradialAxis, dbRebalance); // Create Year circle quarter buttons
+
+                            yrCircle.selectAll(".quarter").on("click", function (e) { gSelDate = d3.select(this).attr('id'); setQYear(); });
+
+
+
+                            var glbltxt = d3.select("#crlChart")
+                                .append("g")
+                                .attr("class", "lbltxt")
+                                .attr("checked", true)
+                                .attr("transform", function () { return "translate(-50,400)" });
+
+                            var bardata;
+
+                            var oAbbGbl, oLvl0, oLvl1, oLvl2, oLvl3, oLvl4;
+
+                            var clkPosX = 0, clkPosY = 0;
+
+                            var SearchComp;
+
+                            var saravAbbDt, bubbleAbbDt;    // to store the gbl data by date.
+                            var scoreLvl_0, barLvl_0, bubbleLvl_0; // to store the gbl Abb data.
+                            var scoreLvl_1, barLvl_1, bubbleLvl_1; // to store the Index data.
+                            var scoreLvl_2, barLvl_2, bubbleLvl_2; // to store the Sector data.
+                            var scoreLvl_3, barLvl_3, bubbleLvl_3  // to store the Indistry Group data.
+                            var scoreLvl_4, barLvl_4, bubbleLvl_4; // to store the Indistry data.
+                            var scoreLvl_5, barLvl_5, bubbleLvl_5; // to store the Sub-Industry data.
+
+                            function renderAbb(year, qua) {
+                                saravAbbDt = gscoreByDates.filter(function (d) { return d.key == gSelDate });
+
+
+                                var selResData = saravAbbDt[0].values;
+
+                                selResData = getScorePos(selResData);
+
+                                barLvl_0 = getBarPos(selResData);
+
+                                bubbleAbbDt = getSectorPos(selResData);
+                                bubbleLvl_0 = getSectorPos(selResData, 0);
+
+                                scoreLvl_0 = selResData;
+                                fnBuildGrid(selResData);
+                                console.log("scoreLvl_0 = "); console.log(selResData);
+
+                            }
+
+                            function renderLvl_1(selkey) {
+                                var selResData = scoreLvl_0;
+
+                                selResData = selResData.filter(function (d) { return d.indexName == selkey });
+
+                                selResData = getScorePos(selResData);
+
+                                barLvl_1 = getBarPos(selResData);
+
+                                bubbleLvl_1 = getSectorPos(selResData, 1);
+
+                                scoreLvl_1 = selResData;
+                                fnBuildGrid(selResData);
+                                console.log("scoreLvl_1 = "); console.log(selResData);
+                            }
+
+
+                            function renderLvl_2(selkey) {
+
+                                var selResData = scoreLvl_1;
+
+
+                                selResData = selResData.filter(function (d) { return d.industry.substring(0, 2) == selkey });
+
+
+
+                                selResData = getScorePos(selResData);
+
+                                barLvl_2 = getBarPos(selResData);
+
+                                bubbleLvl_2 = getSectorPos(selResData, 2);
+
+                                scoreLvl_2 = selResData; fnBuildGrid(selResData);
+                                console.log("scoreLvl_2 = "); console.log(selResData);
+                            }
+
+                            function renderLvl_3(selkey) {
+                                var selResData = scoreLvl_2;
+
+                                selResData = selResData.filter(function (d) { return d.industry.substring(0, 4) == selkey.substring(0, 4) });
+
+                                selResData = getScorePos(selResData);
+
+                                barLvl_3 = getBarPos(selResData);
+
+                                bubbleLvl_3 = getSectorPos(selResData, 3);
+
+                                scoreLvl_3 = selResData; fnBuildGrid(selResData);
+                                console.log("scoreLvl_3 = "); console.log(selResData);
+                            }
+
+                            function renderLvl_4(selkey) {
+                                var selResData = scoreLvl_3;
+
+                                selResData = selResData.filter(function (d) { return d.industry.substring(0, 6) == selkey.substring(0, 6) });
+
+                                selResData = getScorePos(selResData);
+
+                                barLvl_4 = getBarPos(selResData);
+
+                                bubbleLvl_4 = getSectorPos(selResData, 4);
+
+                                scoreLvl_4 = selResData; fnBuildGrid(selResData);
+                                console.log("scoreLvl_4 = "); console.log(selResData);
+                            }
+
+
+
+
+                            function getScorePos(selResData) {
+
+                                console.log("getScorePos");
+
+                                var sMin = Math.min.apply(Math, selResData.map(function (d) { return d.scores; }));
+                                var sMax = Math.max.apply(Math, selResData.map(function (d) { return d.scores; }));
+
+                                selResData.forEach(function (d, i) {
+                                    //(scaledMax-scaledMin)*(num-min)/(max-min)+scaledMin);
+                                    d.score = d.scores * 100;
+                                    d.deg = d.score;
+                                    // d.deg = (((100 - 0) * (d.score - sMin)) / (sMax - sMin) + 0);
+                                    d.sx = Math.cos(((d.deg * 3.6) * Math.PI) / 180);
+                                    d.sy = Math.sin(((d.deg * 3.6) * Math.PI) / 180);
+
+                                    d.cx = Math.cos(((((i * 360) / selResData.length) - 90) * Math.PI) / 180);
+                                    d.cy = Math.sin(((((i * 360) / selResData.length) - 90) * Math.PI) / 180);
+
+                                    d.bx = Math.cos(((((Math.floor(d.score * 10) * 360) / 1000) - 90) * Math.PI) / 180);
+                                    d.by = Math.sin(((((Math.floor(d.score * 10) * 360) / 1000) - 90) * Math.PI) / 180);
+                                    d.industry = d.industry + "";
+                                    return d.score, d.isin, d.industry, d.sx, d.sy, d.deg, d.cx, d.cy, d
+                                });
+
+
+                                return selResData;
+                            }
+
+                            function getBarPos(selResData) {
+                                bardata = [];
+                                for (var k = 0; k < 100; k += 0.1) {
+                                    var l = 0;
+                                    for (var j = 0; j < selResData.length; j++) {
+                                        bb = selResData[j].score;
+                                        if (bb >= k && bb < k + .1) {
+                                            l++;
+                                        }
+                                    }
+                                    bardata.push(l);
+                                }
+                                return bardata;
+
+                            }
+
+                            function getSectorPos(selResData, pIndLevel) {
+                                var result = d3.nest()
+                                    .key(function (d) {
+                                        var val;
+                                        switch (pIndLevel) {
+                                            case 0:
+                                                val = d.indexName; break;
+                                            case 1:
+                                                val = d.industry.substring(0, 2); break;
+                                            case 2:
+                                                val = d.industry.substring(0, 4); break;
+                                            case 3:
+                                                val = d.industry.substring(0, 6); break;
+                                            case 4:
+                                                val = d.industry.substring(0, 8); break;
+                                            default:
+                                                val = d.tradeDate; break;
+                                        }
+                                        return val;
+                                    })
+                                    .rollup(function (v) {
+                                        return {
+                                            xV: d3.mean(v, function (d) { return Math.cos((((d.score * 3.6) - 90) * Math.PI) / 180) }),
+                                            yV: d3.mean(v, function (d) { return Math.sin((((d.score * 3.6) - 90) * Math.PI) / 180) }),
+                                            med: d3.median(v, function (d) { return d.score; }),
+                                            total: v.length,
+                                            comp: v
+                                        };
+                                    })
+                                    .entries(selResData);
+                                return result;
+                            }
+
+
+                            function CompHilight(selInd) {
+                                d3.selectAll(".comp")
+                                    .select(function (d) { return d.industry === selInd.datum().key ? this : null; })
+                                    .classed("compHighLight", true)
+                            }
+
+
+                            /* Create  Company in Circle */
+                            function CreateComps(oSvg, dta, dbCompany, lvl) {
+
+                                var l = d3.scaleLinear()
+                                    .domain([0, 180, 360])
+                                    .range(["green", "yellow", "red"]);
+
+                                var radius = oSvg.select("circle").attr("r");
+
+                                var compLst;
+                                var gExist = d3.select(".compLst" + lvl)._groups[0];
+                                if (gExist != "") {
+                                    compLst = oSvg.select('.compLst' + lvl).remove();
+                                }
+
+                                compLst = oSvg.append("g").attr('class', 'compLst' + lvl)
+                                var compg = compLst.selectAll("g")
+                                    .data(dta)
+                                    .enter().append("g")
+                                    .attr("class", "comp")
+                                    // .attr("transform", function (d, i) { return "rotate(" + ((i * 360 / dta.length) - 90) + ")"; })
+                                    .attr("transform", function (d, i) { return "rotate(" + ((d.deg * 360 / 100) - 90) + ")"; })
+                                    .attr("name", function (d) { return d.isin })
+                                    .on("mouseover", onCompMouseover)
+                                    .on("mouseout", onCompMouseout)
+                                    .on("click", onCompClick)
+
+                                compg.append("text")
+                                    .attr("x", radius + ".9")
+                                    .attr("dy", "0px")
+                                    .style("text-anchor", function (d, i) { var ss = (d.deg * 360 / 100); return (ss - 90) < 270 && (ss - 90) > 90 ? "end" : null; })
+                                    .attr("transform", function (d, i) { var ss = (d.deg * 360 / 100); return (ss - 90) < 270 && (ss - 90) > 90 ? "rotate(180 " + (radius + ".9") + ",0)" : null })
+                                    //.style("text-anchor", function (d, i) { var ss = (i * 360 / dta.length); return (ss - 90) < 270 && (ss - 90) > 90 ? "end" : null; })
+                                    // .attr("transform", function (d, i) { var ss = (i * 360 / dta.length); return (ss - 90) < 270 && (ss - 90) > 90 ? "rotate(180 " + (radius + ".9") + ",0)" : null })
+                                    .style("alignment-baseline", "middle")
+                                    //.attr("fill", function (d, i) { return l((d.deg * 360 / 100)) })
+                                    .text(function (d, i) { return findCompName(dbCompany, d.isin) + d3.format(".1f")(d.score); })
+
+                                compg.append("rect")
+                                    .attr("width", "100px")
+                                    .attr("height", "1px")
+                                    .attr("fill", "rgba(255,255,255,0)")
+                                    .attr("x", radius - 30)
+
+
+                            }
+
+
+                            function onCompClick(elemData) {
+
+                                gblSelId = d3.select(this).attr("name");
+                                gblISindex = false;
+
+                            }
+
+                            function Comphighlight(obj, overout) {
+
+                                //  var prev1 = obj.previousElementSibling;
+                                //  var prev2 = prev1.previousElementSibling;
+                                //  var prev3 = prev2.previousElementSibling;
+                                var cur = d3.select(obj);
+                                //  var next1 = obj.nextElementSibling;
+                                //  var next2 = next1.nextElementSibling;
+                                //  var next3 = next2.nextElementSibling;
+
+                                if (overout == "over") {
+
+                                    //   if (!d3.select(prev1).select("text").classed("compOn")) d3.select(prev1).select("text").attr("dy", "-8px").attr("font-size", "7px");
+                                    //   if (!d3.select(prev2).select("text").classed("compOn")) d3.select(prev2).select("text").attr("dy", "-11px").attr("font-size", "5px");
+                                    //   if (!d3.select(prev3).select("text").classed("compOn")) d3.select(prev3).select("text").attr("dy", "-13px").attr("font-size", "3px");
+                                    if (!d3.select(obj).select("text").classed("compOn")) d3.select(obj).select("text").style("font-size", "12px").attr("fill", "#000");
+                                    //   if (!d3.select(next1).select("text").classed("compOn")) d3.select(next1).select("text").attr("dy", "8px").attr("font-size", "7px");
+                                    //   if (!d3.select(next2).select("text").classed("compOn")) d3.select(next2).select("text").attr("dy", "11px").attr("font-size", "5px");
+                                    //   if (!d3.select(next3).select("text").classed("compOn")) d3.select(next3).select("text").attr("dy", "13px").attr("font-size", "3px");
+                                }
+                                if (overout == "out") {
+
+                                    //  if (!d3.select(prev1).select("text").classed("compOn")) d3.select(prev1).select("text").attr("dy", 0).attr("font-size", "1px");
+                                    //  if (!d3.select(prev2).select("text").classed("compOn")) d3.select(prev2).select("text").attr("dy", 0).attr("font-size", "1px");
+                                    //  if (!d3.select(prev3).select("text").classed("compOn")) d3.select(prev3).select("text").attr("dy", 0).attr("font-size", "1px");
+                                    if (!d3.select(obj).select("text").classed("compOn")) d3.select(obj).select("text").style("font-size", "1px").attr("fill", "#666");
+                                    //  if (!d3.select(next1).select("text").classed("compOn")) d3.select(next1).select("text").attr("dy", 0).attr("font-size", "1px");
+                                    //  if (!d3.select(next2).select("text").classed("compOn")) d3.select(next2).select("text").attr("dy", 0).attr("font-size", "1px");
+                                    //  if (!d3.select(next3).select("text").classed("compOn")) d3.select(next3).select("text").attr("dy", 0).attr("font-size", "1px");
+                                }
+                                if (overout == "on") {
+
+                                    d3.selectAll(".compOn").attr("dy", 0).attr("font-size", "1px").classed("compOn", false);
+
+                                    //  d3.select(prev1).select("text").attr("dy", "-8px").attr("font-size", "7px").classed("compOn", true);
+                                    //  d3.select(prev2).select("text").attr("dy", "-11px").attr("font-size", "5px").classed("compOn", true);
+                                    //  d3.select(prev3).select("text").attr("dy", "-13px").attr("font-size", "3px").classed("compOn", true);
+                                    d3.select(obj).select("text").attr("font-size", "12px").classed("compOn", true);
+                                    //  d3.select(next1).select("text").attr("dy", "8px").attr("font-size", "7px").classed("compOn", true);
+                                    //  d3.select(next2).select("text").attr("dy", "11px").attr("font-size", "5px").classed("compOn", true);
+                                    //  d3.select(next3).select("text").attr("dy", "13px").attr("font-size", "3px").classed("compOn", true);
+                                }
+
+                            }
+
+                            function onCompMouseover(elemData) {
+
+                                Comphighlight(this, "over");
+
+                            }
+
+                            function onCompMouseout(elemData) {
+
+                                Comphighlight(this, "out");
+
+
+                            }
+
+
+                            function LevelNav() {
+                                var nav = d3.select("#levelNav")
+
+                                creatNav("level3", 4, "Industry");
+                                creatNav("level2", 3, "Industry Group");
+                                creatNav("level1", 2, "Sector");
+                                creatNav("index", 1, "Index");
+                                creatNav("abbgbl", 0, "Global");
+
+                                //   d3.select("#navabbgbl").attr("transform", function (d) { return "translate(460,-200)" });
+                                //   d3.select("#navindex").attr("transform", function (d) { return "translate(490,-100)" });
+                                //   d3.select("#navlevel1").attr("transform", function (d) { return "translate(500,0)" });
+                                //   d3.select("#navlevel2").attr("transform", function (d) { return "translate(490,100)" });
+                                //   d3.select("#navlevel3").attr("transform", function (d) { return "translate(460,200)" });
+
+                                function creatNav(lvl, n, lvlnm) {
+                                    var navG = nav.append("g")
+                                        .attr("id", "nav" + lvl)
+                                        .attr("n", n)
+                                        .attr("class", "nav " + lvl)
+                                        .attr("transform", function (d) { return "translate(500,0)" })
+                                        .style("display", "none").style("opacity", 0);
+
+                                    navG.append("circle")
+                                        .attr("class", "crl" + lvl)
+                                        .attr("r", 20)
+                                        .style("fill", "#fff")
+                                        .style("stroke-width", 6)
+
+
+                                    var rectG = navG.append("g")
+
+                                    rectG.append("rect")
+                                        .attr("class", "rect" + lvl)
+                                        .attr("height", 20)
+                                        .attr("x", -4)
+                                        .attr("y", 20)
+                                        .attr("width", 8)
+
+                                    navG.append("text")
+                                        .attr("class", "med")
+                                        .attr("y", 5)
+                                        .text("00.0")
+
+                                    navG.append("text")
+                                        .attr("class", "name")
+                                        .style("text-anchor", "start")
+                                        .text(lvl)
+                                        .attr("y", 0)
+                                        .attr("x", 35)
+
+                                    navG.append("text")
+                                        .attr("class", "subname")
+                                        .style("text-anchor", "start")
+                                        .style("font-size", "13px")
+                                        .style("text-transform", "uppercase")
+                                        .style("fill", "#666")
+                                        .text("[ " + lvlnm + " ]")
+                                        .attr("y", 18)
+                                        .attr("x", 35)
+
+                                    navG.on("click", onNavClick)
+                                }
+
+                            }
+
+
+
+                            function fnSectors(pSectorData, pClass) {
+
+                                var radius = chartMain.select("circle").attr("r");
+
+                                var sect;
+                                var sectG;
+                                var crlR = 15;
+                                var crlStkW = 6;
+                                if (pClass == "abbgbl") { d3.selectAll(".gics").remove(); }
+                                d3.select(".gics" + pClass).remove();
+                                sect = chartMain.append("g")
+                                    .attr("class", "gics" + pClass)
+
+                                sectG = sect.selectAll("g")
+                                    .data(pSectorData)
+                                    .enter().append("g")
+
+
+                                if (pClass == "abbgbl") {
+
+                                    sectG.attr("id", function (d, i) { return "ABB"; })
+                                } else if (pClass == "index") {
+                                    sectG.attr("id", function (d, i) {
+                                        var v = findIndName(dbGICS, d.key);
+
+                                        var replaceChars = { "&": "", " ": "" };
+                                        v = v.replace(/&| /g, function (match) { return replaceChars[match]; })
+
+                                        return v;
+                                    })
+                                } else {
+                                    sectG.attr("id", function (d) { return "k" + d.key })
+
+                                }
+
+                                //sectn.on("mouseover",  onIndexMouseover ).on("mouseout",  onIndexMouseout  )
+                                sectG.attr("class", "gics " + pClass)
+                                    .attr("x", function (d) { return d.value.xV * (radius - 20) })
+                                    .attr("y", function (d) { return d.value.yV * (radius - 20) })
+
+                                sectG
+                                    .attr("transform", function (d) {
+                                        return "translate(" + clkPosX + "," + clkPosY + ") scale(0)"
+                                    }
+                                    );
+
+                                sectG
+                                    .transition().duration(3000).ease(d3.easeExp)
+                                    .attr("transform", function (d) {
+                                        var x = d.value.xV * (radius - 20);
+                                        var y = d.value.yV * (radius - 20);
+                                        if (pClass == "abbgbl") {
+                                            return "translate(" + x + "," + y + ") scale(2)";
+                                        } else {
+
+                                            return "translate(" + x + "," + y + ") scale(1)";
+                                        }
+                                    }
+                                    );
+
+                                sectG.append("circle")
+                                    .attr("class", "crl" + pClass)
+                                    .attr("key", function (d) { return d.key })
+                                    .attr("r", 15)
+                                    .style("stroke-width", 6)
+                                    .style("fill", "rgba(255,255,255,.5)")
+
+                                var rectG = sectG.append("g")
+
+                                    .attr("transform", function (d) {
+                                        return "rotate(" + ((d.value.med * 360 / 100) - 180) + ")"
+                                    })
+
+                                rectG.append("rect")
+                                    .attr("class", "rect" + pClass)
+                                    .attr("height", 15)
+                                    .attr("x", -4)
+                                    .attr("y", 15.2)
+                                    .attr("width", 8)
+
+                                sectG.append("text")
+                                    .attr("class", "med")
+                                    .attr("y", 3)
+                                    .text(function (d) { return (d.value.med).toFixed(1); })
+
+                                sectG.append("text")
+                                    .attr("class", "name")
+
+                                    .text(function (d) { if (pClass == "index") { return findIndName(dbGICS, d.key) } else if (pClass == "abbgbl") { return "ABB"; } else { return findIndName(dbGICS, d.key) } })
+                                    .attr("y", 35)
+
+                                sectG.on("click", onIndexClick)
+                            }
+
+
+
+                            function createChilds(data, obj, pClass) {
+
+
+                                data.sort(function (x, y) {
+                                    return d3.descending(x.value.med, y.value.med);
+                                })
+
+                                var yrRadius = 500;
+                                var radialAxis = obj;
+                                var count = data.length - 1;
+
+                                radialAxis.selectAll(".lvlChilds").remove();
+
+                                var axialAxis = radialAxis
+                                    .append("g").attr("class", "lvlChilds").attr("display", "block")
+                                    .selectAll('g')
+                                    .data(data)
+                                    .enter().append('g')
+                                    .attr('transform', function (d, i) { return 'rotate(' + (rad2deg(i) - (180 + ((count / 2) * 8))) + ')translate(' + yrRadius + ', 0) ' });
+
+
+                                var yr = axialAxis.append('g')
+                                    .attr("class", "gics " + pClass)
+                                    .attr('transform', function (d, i) { return 'rotate(' + ((180 + ((count / 2) * 8)) - rad2deg(i)) + ' )' })
+
+                                if (pClass == "abbgbl") {
+                                    yr.attr("name", function (d, i) { return "ABB"; })
+                                }
+                                else if (pClass == "index") {
+                                    yr.attr("name", function (d, i) {
+                                        var v = findIndName(dbGICS, d.key);
+
+                                        var replaceChars = { "&": "", " ": "" };
+                                        v = v.replace(/&| /g, function (match) { return replaceChars[match]; })
+
+                                        return v;
+                                    })
+                                } else {
+                                    yr.attr("name", function (d) { return "k" + d.key })
+
+                                }
+
+
+                                yr.append("circle")
+                                    .attr("class", "crl" + pClass)
+                                    .attr("key", function (d) { return d.key })
+                                    .attr("r", 17)
+                                    .style("stroke-width", 5)
+                                    .style("fill", "rgba(255,255,255,1)")
+
+                                var rectG = yr.append("g")
+
+                                    .attr("transform", function (d) {
+                                        return "rotate(" + ((d.value.med * 360 / 100) - 180) + ")"
+                                    })
+
+                                rectG.append("rect")
+                                    .attr("class", "rect" + pClass)
+                                    .attr("height", 17)
+                                    .attr("x", -4)
+                                    .attr("y", 15.2)
+                                    .attr("width", 8)
+
+                                yr.append("text")
+                                    .attr("class", "med")
+                                    .attr("y", 4)
+                                    .text(function (d) { return (d.value.med).toFixed(1); })
+
+                                yr.append("text")
+                                    .attr("class", "name")
+                                    .style("text-anchor", "end")
+                                    .text(function (d) { if (pClass == "index") { return findIndName(dbGICS, d.key) } else if (pClass == "abbgbl") { return "ABB"; } else { return findIndName(dbGICS, d.key) } })
+                                    .attr("x", -30)
+                                    .attr("y", 4)
+
+                                yr.style("opacity", 0).transition().duration(1500).style("opacity", 1)
+
+                                yr.on("mouseover", onlvlChildOver)
+                                    .on("mouseout", onlvlChildOut)
+                                    .on("click", onIndexClick);
+
+                                function rad2deg(angle) {
+                                    return angle * 8;
+                                }
+
+
+                                function onlvlChildOver(elemData) {
+
+                                    var cls = d3.select(this).attr("class")
+                                    cls = cls.replace("gics ", "");
+
+                                    var selkey = d3.select(this).select("circle").attr("key");
+
+
+
+                                    switch (cls) {
+                                        case "index":
+                                            //var s = scoreLvl_0.filter(function (d) { return d.indexName == selkey });
+                                            d3.select(".gicsindex").selectAll("g").select(function (d) { return d.key === selkey ? null : this; }).classed("compHighLight", true);
+                                            d3.selectAll(".barslevel0").classed("compHighLight", true);
+
+                                            d3.select(".compLstlevel0").selectAll(".comp")
+                                                .select(function (d) {
+                                                    return d.indexName === selkey ? null : this;
+
+                                                })
+                                                .classed("compHighLight", true)
+
+
+
+                                            break;
+                                        case "level1":
+                                            d3.select(".gicslevel1").selectAll("g").select(function (d) { return d.key === selkey ? null : this; }).classed("compHighLight", true);
+                                            d3.selectAll(".barslevel1").classed("compHighLight", true);
+                                            d3.select(".compLstlevel1").selectAll(".comp")
+                                                .select(function (d) {
+                                                    return d.industry.substring(0, 2) === selkey ? null : this;
+                                                })
+                                                .classed("compHighLight", true)
+
+                                            break;
+                                        case "level2":
+                                            d3.select(".gicslevel2").selectAll("g").select(function (d) { return d.key === selkey ? null : this; }).classed("compHighLight", true);
+                                            d3.selectAll(".barslevel2").classed("compHighLight", true);
+                                            d3.select(".compLstlevel2").selectAll(".comp")
+                                                .select(function (d) {
+                                                    return d.industry.substring(0, 4) === selkey ? null : this;
+                                                })
+                                                .classed("compHighLight", true)
+                                            break;
+                                        case "level3":
+                                            d3.select(".gicslevel3").selectAll("g").select(function (d) { return d.key === selkey ? null : this; }).classed("compHighLight", true);
+                                            d3.selectAll(".barslevel3").classed("compHighLight", true);
+                                            d3.select(".compLstlevel3").selectAll(".comp")
+                                                .select(function (d) {
+                                                    return d.industry.substring(0, 6) === selkey ? null : this;
+                                                })
+                                                .classed("compHighLight", true)
+                                            break;
+                                        case "level4":
+                                            d3.select(".gicslevel4").selectAll("g").select(function (d) { return d.key === selkey ? null : this; }).classed("compHighLight", true);
+                                            d3.selectAll(".barslevel4").classed("compHighLight", true);
+                                            d3.select(".compLstlevel4").selectAll(".comp")
+                                                .select(function (d) {
+                                                    return d.industry.substring(0, 8) === selkey ? null : this;
+                                                })
+                                                .classed("compHighLight", true)
+                                            break;
+                                    }
+
+
+                                }
+
+                                function onlvlChildOut(elemData) {
+                                    d3.selectAll("#crlChart").selectAll(".compHighLight").classed("compHighLight", false)
+                                    // d3.selectAll(".comp").classed("compHighLight", false)
+
+                                }
+                                return yr;
+
+                            }
+
+
+
+                            function navAnim(oid, obj) {
+
+
+
+
+
+                                switch (oid) {
+                                    case "abbgbl":
+
+                                        var nav = d3.select("#navabbgbl");
+                                        if (obj) {
+                                            nav.select("g").attr("transform", obj.select("g").attr("transform"));
+                                            nav.select("text.med").text(obj.select("text.med").text())
+                                            nav.select("text.name").text(obj.select("text.name").text())
+                                        }
+
+                                        d3.select("#navabbgbl").style("display", "block").transition().duration(1500).ease(d3.easePoly).style("opacity", 0);
+
+                                        d3.select("#navabbgbl").transition().duration(1500).ease(d3.easePoly).attr("transform", function (d) { return "translate(500,0)" }).style("opacity", "1");
+                                        d3.select("#navindex").transition().duration(1500).ease(d3.easePoly).attr("transform", function (d) { return "translate(500,0)" });
+                                        d3.select("#navlevel1").transition().duration(1500).ease(d3.easePoly).attr("transform", function (d) { return "translate(500,0)" });
+                                        d3.select("#navlevel2").transition().duration(1500).ease(d3.easePoly).attr("transform", function (d) { return "translate(500,0)" });
+                                        d3.select("#navlevel3").transition().duration(1500).ease(d3.easePoly).attr("transform", function (d) { return "translate(500,0)" });
+
+                                        d3.select("#navindex").transition().duration(1500).ease(d3.easePoly).style("opacity", 0).transition().style("display", "none");
+                                        d3.select("#navlevel1").transition().duration(1500).ease(d3.easePoly).style("opacity", 0).transition().style("display", "none");
+                                        d3.select("#navlevel2").transition().duration(1500).ease(d3.easePoly).style("opacity", 0).transition().style("display", "none");
+                                        d3.select("#navlevel3").transition().duration(1500).ease(d3.easePoly).style("opacity", 0).transition().style("display", "none");
+
+
+
+                                        d3.select(".barslevel0").style("display", "block");
+                                        d3.select(".barslevel1").style("display", "none");
+                                        d3.select(".barslevel2").style("display", "none");
+                                        d3.select(".barslevel3").style("display", "none");
+                                        d3.select(".barslevel4").style("display", "none");
+
+                                        d3.select(".gicsabbgbl").style("display", "block");
+                                        d3.select(".gicsindex").style("display", "block");
+                                        d3.select(".gicslevel1").style("display", "none");
+                                        d3.select(".gicslevel2").style("display", "none");
+                                        d3.select(".gicslevel3").style("display", "none");
+
+                                        d3.select("#rbYears").style("display", "none");
+
+
+                                        break;
+
+                                    case "index":
+                                        var nav = d3.select("#navindex");
+                                        if (obj) {
+                                            nav.select("g").attr("transform", obj.select("g").attr("transform"));
+                                            nav.select("text.med").text(obj.select("text.med").text())
+                                            nav.select("text.name").text(obj.select("text.name").text())
+                                        }
+                                        d3.select("#navabbgbl").style("display", "block");
+                                        d3.select("#navindex").style("display", "block").transition().duration(1500).ease(d3.easePoly).style("opacity", 0);
+
+                                        d3.select("#navabbgbl").transition().duration(1500).ease(d3.easePoly).attr("transform", function (d) { return "translate(495,-50)" });
+                                        d3.select("#navindex").transition().duration(1500).ease(d3.easePoly).attr("transform", function (d) { return "translate(495,50)" }).style("opacity", "1");
+                                        d3.select("#navlevel1").transition().duration(1500).ease(d3.easePoly).attr("transform", function (d) { return "translate(495,50)" });
+                                        d3.select("#navlevel2").transition().duration(1500).ease(d3.easePoly).attr("transform", function (d) { return "translate(495,50)" });
+                                        d3.select("#navlevel3").transition().duration(1500).ease(d3.easePoly).attr("transform", function (d) { return "translate(495,50)" });
+
+                                        d3.select("#navlevel1").transition().duration(1500).ease(d3.easePoly).style("opacity", 0).transition().duration(1).style("display", "none");
+                                        d3.select("#navlevel2").transition().duration(1500).ease(d3.easePoly).style("opacity", 0).transition().duration(1).style("display", "none");
+                                        d3.select("#navlevel3").transition().duration(1500).ease(d3.easePoly).style("opacity", 0).transition().duration(1).style("display", "none");
+
+
+
+                                        d3.select(".barslevel0").style("display", "none");
+                                        d3.select(".barslevel1").style("display", "block");
+                                        d3.select(".barslevel2").style("display", "none");
+                                        d3.select(".barslevel3").style("display", "none");
+                                        d3.select(".barslevel4").style("display", "none");
+
+                                        d3.select(".gicsabbgbl").style("display", "none");
+                                        d3.select(".gicsindex").style("display", "block");
+                                        d3.select(".gicslevel1").style("display", "block");
+                                        d3.select(".gicslevel2").style("display", "none");
+                                        d3.select(".gicslevel3").style("display", "none");
+
+                                        d3.select("#rbYears").style("display", "none");
+                                        break;
+                                    case "level0":
+
+                                        break;
+                                    case "level1":
+                                        var nav = d3.select("#navlevel1");
+                                        if (obj) {
+                                            nav.select("g").attr("transform", obj.select("g").attr("transform"));
+                                            nav.select("text.med").text(obj.select("text.med").text())
+                                            nav.select("text.name").text(obj.select("text.name").text())
+                                        }
+                                        d3.select("#navabbgbl").style("display", "block");
+                                        d3.select("#navindex").style("display", "block");
+                                        d3.select("#navlevel1").style("display", "block").transition().duration(1500).ease(d3.easePoly).style("opacity", 0);
+
+                                        d3.select("#navabbgbl").transition().duration(1500).ease(d3.easeExp).attr("transform", function (d) { return "translate(490,-100)" });
+                                        d3.select("#navindex").transition().duration(1500).ease(d3.easeExp).attr("transform", function (d) { return "translate(500,0)" });
+                                        d3.select("#navlevel1").transition().duration(1500).ease(d3.easeExp).attr("transform", function (d) { return "translate(490,100)" }).style("opacity", "1");
+                                        d3.select("#navlevel2").transition().duration(1500).ease(d3.easeExp).attr("transform", function (d) { return "translate(490,100)" });
+                                        d3.select("#navlevel3").transition().duration(1500).ease(d3.easeExp).attr("transform", function (d) { return "translate(490,100)" });
+
+                                        d3.select("#navlevel2").transition().duration(1500).ease(d3.easeExp).style("opacity", 0).transition().style("display", "none");
+                                        d3.select("#navlevel3").transition().duration(1500).ease(d3.easeExp).style("opacity", 0).transition().style("display", "none");
+
+
+
+                                        d3.select(".barslevel0").style("display", "none");
+                                        d3.select(".barslevel1").style("display", "none");
+                                        d3.select(".barslevel2").style("display", "block");
+                                        d3.select(".barslevel3").style("display", "none");
+                                        d3.select(".barslevel4").style("display", "none");
+
+                                        d3.select(".gicsabbgbl").style("display", "none");
+                                        d3.select(".gicsindex").style("display", "none");
+                                        d3.select(".gicslevel1").style("display", "block");
+                                        d3.select(".gicslevel2").style("display", "block");
+                                        d3.select(".gicslevel3").style("display", "none");
+
+
+                                        d3.select("#rbYears").style("display", "none");
+
+                                        break;
+                                    case "level2":
+
+                                        var nav = d3.select("#navlevel2");
+                                        if (obj) {
+                                            nav.select("g").attr("transform", obj.select("g").attr("transform"));
+                                            nav.select("text.med").text(obj.select("text.med").text())
+                                            nav.select("text.name").text(obj.select("text.name").text())
+                                        }
+
+                                        d3.select("#navabbgbl").style("display", "block");
+                                        d3.select("#navindex").style("display", "block");
+                                        d3.select("#navlevel1").style("display", "block");
+                                        d3.select("#navlevel2").style("display", "block").transition().duration(1500).ease(d3.easeExp).style("opacity", 0);
+
+                                        d3.select("#navabbgbl").transition().duration(1500).ease(d3.easeExp).attr("transform", function (d) { return "translate(470,-150)" });
+                                        d3.select("#navindex").transition().duration(1500).ease(d3.easeExp).attr("transform", function (d) { return "translate(495,-50)" });
+                                        d3.select("#navlevel1").transition().duration(1500).ease(d3.easeExp).attr("transform", function (d) { return "translate(495,50)" });
+                                        d3.select("#navlevel2").transition().duration(1500).ease(d3.easeExp).attr("transform", function (d) { return "translate(470,150)" }).style("opacity", "1");
+                                        d3.select("#navlevel3").transition().duration(1500).ease(d3.easeExp).attr("transform", function (d) { return "translate(470,150)" });
+
+                                        d3.select("#navlevel3").transition().duration(1500).ease(d3.easeExp).style("opacity", 0).transition().style("display", "none");
+
+
+                                        d3.select(".barslevel0").style("display", "none");
+                                        d3.select(".barslevel1").style("display", "none");
+                                        d3.select(".barslevel2").style("display", "none");
+                                        d3.select(".barslevel3").style("display", "block");
+                                        d3.select(".barslevel4").style("display", "none");
+
+                                        d3.select(".gicsabbgbl").style("display", "none");
+                                        d3.select(".gicsindex").style("display", "none");
+                                        d3.select(".gicslevel1").style("display", "none");
+                                        d3.select(".gicslevel2").style("display", "block");
+                                        d3.select(".gicslevel3").style("display", "block");
+
+                                        d3.select("#rbYears").style("display", "none");
+
+                                        break;
+                                    case "level3":
+
+                                        var nav = d3.select("#navlevel3");
+                                        if (obj) {
+                                            nav.select("g").attr("transform", obj.select("g").attr("transform"));
+                                            nav.select("text.med").text(obj.select("text.med").text())
+                                            nav.select("text.name").text(obj.select("text.name").text())
+                                        }
+
+                                        d3.select("#navabbgbl").style("display", "block");
+                                        d3.select("#navindex").style("display", "block");
+                                        d3.select("#navlevel1").style("display", "block");
+                                        d3.select("#navlevel2").style("display", "block");
+                                        d3.select("#navlevel3").style("display", "block").transition().duration(1500).ease(d3.easeExp).style("opacity", 0);
+
+                                        d3.select("#navabbgbl").transition().duration(1500).ease(d3.easeExp).attr("transform", function (d) { return "translate(460,-200)" });
+                                        d3.select("#navindex").transition().duration(1500).ease(d3.easeExp).attr("transform", function (d) { return "translate(490,-100)" });
+                                        d3.select("#navlevel1").transition().duration(1500).ease(d3.easeExp).attr("transform", function (d) { return "translate(500,0)" });
+                                        d3.select("#navlevel2").transition().duration(1500).ease(d3.easeExp).attr("transform", function (d) { return "translate(490,100)" });
+                                        d3.select("#navlevel3").transition().duration(1500).ease(d3.easeExp).attr("transform", function (d) { return "translate(460,200)" }).style("opacity", "1");
+
+
+
+                                        d3.select(".barslevel0").style("display", "none");
+                                        d3.select(".barslevel1").style("display", "none");
+                                        d3.select(".barslevel2").style("display", "none");
+                                        d3.select(".barslevel3").style("display", "none");
+                                        d3.select(".barslevel4").style("display", "block");
+
+                                        d3.select(".gicsabbgbl").style("display", "none");
+                                        d3.select(".gicsindex").style("display", "none");
+                                        d3.select(".gicslevel1").style("display", "none");
+                                        d3.select(".gicslevel2").style("display", "none");
+                                        d3.select(".gicslevel3").style("display", "block");
+
+                                        d3.select("#rbYears").style("display", "none");
+
+                                        break;
+
+                                    default:
+
+                                        d3.select("#navabbgbl").transition().duration(1500).ease(d3.easeExp).style("opacity", 0).transition().style("display", "none");
+                                        d3.select("#navindex").transition().duration(1500).ease(d3.easeExp).style("opacity", 0).transition().style("display", "none");
+                                        d3.select("#navlevel1").transition().duration(1500).ease(d3.easeExp).style("opacity", 0).transition().style("display", "none");
+                                        d3.select("#navlevel2").transition().duration(1500).ease(d3.easeExp).style("opacity", 0).transition().style("display", "none");
+                                        d3.select("#navlevel3").transition().duration(1500).ease(d3.easeExp).style("opacity", 0).transition().style("display", "none");
+
+
+
+
+                                        d3.select(".barslevel0").style("display", "block");
+                                        d3.select(".barslevel1").style("display", "none");
+                                        d3.select(".barslevel2").style("display", "none");
+                                        d3.select(".barslevel3").style("display", "none");
+                                        d3.select(".barslevel4").style("display", "none");
+
+                                        d3.select(".gicsabbgbl").style("display", "block");
+                                        d3.select(".gicsindex").style("display", "block");
+                                        d3.select(".gicslevel1").style("display", "block");
+                                        d3.select(".gicslevel2").style("display", "block");
+                                        d3.select(".gicslevel3").style("display", "block");
+
+                                        d3.select("#rbYears").style("display", "block");
+
+                                        d3.select(".lvlChilds").style("display", "none");
+
+                                        break;
+
+                                }
+                            }
+
+                            var LevelDeep = 0;
+
+                            function onIndexClick(elemData) {
+
+
+                                var e = this;
+
+
+                                if (d3.select(this).attr("id") == null) {
+                                    var name = d3.select(this).attr("name");
+                                    e = d3.select("#" + name).node();
+
+
+                                }
+
+                                if (d3.select(e).attr("class") != "gics level4") {
+                                    d3.select(".compLstlevel0").style("display", "none");
+                                    d3.select(".compLstlevel1").style("display", "none");
+                                    d3.select(".compLstlevel2").style("display", "none");
+                                    d3.select(".compLstlevel3").style("display", "none");
+                                    d3.select(".compLstlevel4").style("display", "none");
+                                }
+
+                                if (d3.select(e).attr("class") == "gics abbgbl") {
+
+                                    if (d3.select("#navabbgbl").style("display") == "block") { return; }
+
+                                    oAbbGbl = d3.select(e);
+
+                                    LvlZoomIn(e, ".compLstlevel0");
+
+                                    navAnim("abbgbl", oAbbGbl);
+
+                                    ChartBuildLvl_0(elemData.key);
+
+                                    LevelDeep = 0
+                                }
+
+                                if (d3.select(e).attr("class") == "gics index") {
+
+                                    if (d3.select("#navindex").style("display") == "block") { return; }
+
+                                    oLvl0 = d3.select(e);
+
+                                    LvlZoomIn(e, ".compLstlevel1");
+
+                                    navAnim("index", oLvl0);
+
+                                    ChartBuildLvl_1(elemData.key);
+                                    LevelDeep = 1;
+                                }
+                                if (d3.select(e).attr("class") == "gics level1") {
+
+                                    if (d3.select("#navlevel1").style("display") == "block") { return; }
+
+                                    oLvl1 = d3.select(e);
+
+                                    LvlZoomIn(e, ".compLstlevel2");
+
+                                    navAnim("level1", oLvl1);
+
+                                    ChartBuildLvl_2(elemData.key)
+                                    LevelDeep = 2;
+                                }
+                                if (d3.select(e).attr("class") == "gics level2") {
+
+                                    if (d3.select("#navlevel2").style("display") == "block") { return; }
+
+                                    oLvl2 = d3.select(e);
+
+                                    LvlZoomIn(e, ".compLstlevel3");
+
+                                    navAnim("level2", oLvl2);
+
+                                    ChartBuildLvl_3(elemData.key);
+                                    LevelDeep = 3;
+                                }
+                                if (d3.select(e).attr("class") == "gics level3") {
+
+                                    if (d3.select("#navlevel3").style("display") == "block") { return; }
+
+                                    oLvl3 = d3.select(e);
+
+                                    LvlZoomIn(e, ".compLstlevel4");
+
+                                    navAnim("level3", oLvl3);
+
+                                    ChartBuildLvl_4(elemData.key);
+                                    LevelDeep = 4;
+                                }
+
+
+                                function LvlZoomIn(e, complvl) {
+                                    var p1 = d3.select(e).node().parentNode;
+
+
+                                    var string = d3.select(e).attr("transform"),
+                                        t = string.substring(string.indexOf("(") + 1, string.indexOf(")")).split(",");
+                                    clkPosX = t[0];
+                                    clkPosY = t[1];
+
+                                    d3.select(p1).selectAll(".gics").style("display", "none");
+
+                                    d3.select(e).style("display", "block");
+
+                                    d3.select(e)
+                                        .transition().duration(3000).ease(d3.easeExp)
+                                        .attr("transform", "translate(0, 0) scale(17)")
+
+                                    d3.select(e).select("circle")
+                                        .transition().duration(3000).ease(d3.easeExp)
+                                        .style("stroke-width", .5)
+                                        .style("opacity", 0.1).on("end", onEndShowComp(complvl))
+
+                                    d3.select(e).select("rect")
+                                        .transition().duration(2500).ease(d3.easeExp)
+                                        .attr("x", -.5)
+                                        .attr("width", 1)
+                                        .attr("height", 5)
+                                        .style("opacity", .3)
+
+                                    d3.select(e).selectAll("text")
+                                        .transition().duration(2000).ease(d3.easeExp)
+                                        .style("opacity", 0)
+                                        .transition().style("display", "none")
+                                }
+
+                            }
+
+                            function onNavClick() {
+
+                                var n = (d3.select(this).attr("n"));
+
+
+                                var interval = d3.interval(function () {
+
+                                    fnNavClick(LevelDeep);
+                                    LevelDeep--;
+
+                                    if (LevelDeep < n) {
+                                        var i = LevelDeep < 0 ? 0 : LevelDeep;
+                                        onEndShowComp(".compLstlevel" + i)
+                                        interval.stop();
+                                        return;
+                                    }
+                                }, 1000)
+                            }
+
+
+                            function fnNavClick(n) {
+
+                                d3.select(".compLstlevel0").style("display", "none");
+                                d3.select(".compLstlevel1").style("display", "none");
+                                d3.select(".compLstlevel2").style("display", "none");
+                                d3.select(".compLstlevel3").style("display", "none");
+                                d3.select(".compLstlevel4").style("display", "none");
+
+                                switch (n) {
+                                    case 0:
+
+                                        LvlZoomOut(oAbbGbl, ".gicsindex", ".compLstlevel0");
+                                        navAnim();
+
+                                        break;
+
+                                    case 1:
+
+                                        createChilds(bubbleLvl_0, gradialAxis, "index");
+
+
+                                        LvlZoomOut(oLvl0, ".gicslevel1", ".compLstlevel0");
+                                        navAnim("abbgbl");
+
+                                        break;
+
+                                    case 2:
+
+                                        createChilds(bubbleLvl_1, gradialAxis, "level1");
+
+                                        LvlZoomOut(oLvl1, ".gicslevel2", ".compLstlevel1");
+                                        navAnim("index");
+
+                                        break;
+
+                                    case 3:
+
+                                        createChilds(bubbleLvl_2, gradialAxis, "level2");
+
+                                        LvlZoomOut(oLvl2, ".gicslevel3", ".compLstlevel2");
+                                        navAnim("level1");
+
+                                        break;
+
+                                    case 4:
+                                        createChilds(bubbleLvl_3, gradialAxis, "level3");
+
+                                        LvlZoomOut(oLvl3, ".gicslevel4", ".compLstlevel3");
+                                        navAnim("level2");
+
+                                        break;
+                                }
+
+
+
+                                function LvlZoomOut(e, top, complvl) {
+
+                                    d3.select(top)
+                                        .transition().duration(1000).ease(d3.easeLinear)
+                                        .attr("transform", function (d) {
+                                            var x = e.attr("x");
+                                            var y = e.attr("y");
+                                            return "translate(" + x + "," + y + ") scale(0)"
+                                        })
+
+
+                                    var p1 = e.node().parentNode;
+
+                                    d3.select(p1).selectAll(".gics").style("display", "block").style("opacity", 0);
+                                    e.style("opacity", 1);
+
+                                    d3.select(p1).selectAll(".gics")
+                                        .transition().delay(800).duration(200).ease(d3.easeLinear)
+                                        .style("opacity", 1);
+
+                                    e.transition().duration(1000).ease(d3.easeLinear)
+                                        .attr("transform", function (d) {
+                                            var x = d3.select(this).attr("x");
+                                            var y = d3.select(this).attr("y");
+                                            if (top == ".gicsindex") {
+                                                return "translate(" + x + "," + y + ") scale(2)"
+                                            } else {
+                                                return "translate(" + x + "," + y + ") scale(1)"
+                                            }
+                                        })
+
+                                    e.select("circle")
+                                        .transition().duration(1000).ease(d3.easeLinear)
+                                        .style("stroke-width", 6)
+                                        .style("opacity", 1)
+                                    //.on("end", onEndShowComp(complvl))
+
+                                    e.select("rect")
+                                        .transition().delay(500).duration(500).ease(d3.easeLinear)
+                                        .attr("x", -4)
+                                        .attr("width", 8)
+                                        .attr("height", 15)
+                                        .style("opacity", 1)
+
+                                    e.selectAll("text")
+                                        .transition().duration(1)
+                                        .style("display", "block")
+                                        .transition().delay(500).duration(500).ease(d3.easeLinear)
+                                        .style("opacity", 1)
+                                }
+
+
+
+                            }
+                            function onEndShowComp(arg) {
+
+                                d3.select(".compLstlevel0").style("display", "none");
+                                d3.select(".compLstlevel1").style("display", "none");
+                                d3.select(".compLstlevel2").style("display", "none");
+                                d3.select(".compLstlevel3").style("display", "none");
+                                d3.select(".compLstlevel4").style("display", "none");
+
+                                d3.select(arg).transition().delay(1000).style("display", "block");
+
+                            }
+
+                            function setQYear() {
+                                var yrDt = "" + gSelDate;
+                                d3.select('.yrSelect').classed("yrSelect", false).select('tspan').remove();
+                                d3.select('.yrbSelect').classed("yrbSelect", false)
+                                var yrid = yrDt.substr(0, 4);
+                                var yr = d3.select("#y" + yrid);
+                                var Q = yrDt.substr(4, 2) / 3;
+                                yr.append("tspan").text(" / Q" + Q);
+                                yr.classed("yrSelect", true);
+
+                                var yrb = d3.select("#yb" + yrid);
+                                yrb.classed("yrbSelect", true);
+                                // ChartBuild(gSelDate, 0, null)
+
+                                ChartBuildABB(yrid, Q)
+                                LevelNav()
+                            }
+
+
+                            function ChartBuildABB(year, qua) {
+                                saravAbbDt = gscoreByDates.filter(function (d) { return d.key == gSelDate });
+                                if (saravAbbDt == "") {
+                                    d3.select("#loader").style("display", "block");
+                                    var fScore1 = "http://demo.spinecapital.com/ScoresData/api/Scores/GetDisScores/" + year + "/" + qua + "/GLOBAL";
+                                    d3.json(fScore1)
+                                        .on("progress", function (d) {
+                                            console.log(d.loaded);
+                                        })
+                                        .on("error", function (error) { alert("failure!", error); })
+                                        .get(function (dbScore1) {
+                                            d3.select("#loader").style("display", "none")
+                                            var gscoreByDates1 = d3.nest().key(function (d) { return d.tradeDate; }).entries(dbScore1);
+                                            gscoreByDates = gscoreByDates.concat(gscoreByDates1);
+                                            //   console.log(gscoreByDates)
+                                            //   console.log(gSelDate);
+                                            saravAbbDt = gscoreByDates.filter(function (d) { return d.key == gSelDate });
+                                            console.log(saravAbbDt);
+                                            var selResData = saravAbbDt[0].values;
+                                            console.log(selResData);
+                                            selResData = getScorePos(selResData);
+
+                                            barLvl_0 = getBarPos(selResData);
+
+                                            bubbleAbbDt = getSectorPos(selResData);
+                                            bubbleLvl_0 = getSectorPos(selResData, 0);
+
+                                            scoreLvl_0 = selResData;
+
+                                            CreateBars(chartMain, barLvl_0, "level0");
+                                            CreateComps(chartMain, scoreLvl_0, dbCompany, "level0");
+
+                                            fnSectors(bubbleAbbDt, "abbgbl");
+
+                                            // console.log("scoreLvl_0.1 = "); console.log(selResData);
+                                        });
+                                } else {
+
+                                    renderAbb(year, qua);
+                                    CreateBars(chartMain, barLvl_0, "level0");
+                                    CreateComps(chartMain, scoreLvl_0, dbCompany, "level0");
+
+                                    fnSectors(bubbleAbbDt, "abbgbl");
+                                }
+
+                            }
+
+                            function ChartBuildLvl_0() {
+                                //  renderAbb();
+                                //  CreateBars(chartMain, barLvl_0);
+                                // CreateComps(chartMain, scoreLvl_0, dbCompany);
+
+                                fnSectors(bubbleLvl_0, "index");
+                                createChilds(bubbleLvl_0, gradialAxis, "index");
+
+                            }
+
+                            function ChartBuildLvl_1(key) {
+                                renderLvl_1(key);
+                                CreateBars(chartMain, barLvl_1, "level1");
+                                CreateComps(chartMain, scoreLvl_1, dbCompany, "level1");
+                                fnSectors(bubbleLvl_1, "level1");
+
+                                createChilds(bubbleLvl_1, gradialAxis, "level1");
+                            }
+
+                            function ChartBuildLvl_2(key) {
+                                renderLvl_2(key);
+                                CreateBars(chartMain, barLvl_2, "level2");
+                                CreateComps(chartMain, scoreLvl_2, dbCompany, "level2");
+                                fnSectors(bubbleLvl_2, "level2");
+                                createChilds(bubbleLvl_2, gradialAxis, "level2");
+                            }
+
+
+                            function ChartBuildLvl_3(key) {
+                                renderLvl_3(key);
+                                CreateBars(chartMain, barLvl_3, "level3");
+                                CreateComps(chartMain, scoreLvl_3, dbCompany, "level3");
+                                fnSectors(bubbleLvl_3, "level3");
+                                createChilds(bubbleLvl_3, gradialAxis, "level3");
+                            }
+
+                            function ChartBuildLvl_4(key) {
+                                renderLvl_4(key);
+                                CreateBars(chartMain, barLvl_4, "level4");
+                                CreateComps(chartMain, scoreLvl_4, dbCompany, "level4");
+                                fnSectors(bubbleLvl_4, "level4");
+
+                                createChilds(bubbleLvl_4, gradialAxis, "level4");
+                            }
+
+                            setQYear();
+
+                        });
+                });
+            });
+        });
+        function fnBuildGrid(data) {
+            console.log("=====" + $("#jqGrid").html());
+            if ($("#jqGrid").html().trim() != "")
+                $("#jqGrid").setGridParam({
+                    data: data, grouping: true,
+                    groupingView: {
+                        groupField: ["indexName"],
+                        groupColumnShow: [true],
+                        groupText: ["<b>{0}</b>"],
+                        groupOrder: ["asc"],
+                        groupSummary: [true],
+                        groupCollapse: false 
+                    } }).trigger("reloadGrid");
+            $("#jqGrid").jqGrid({
+                datatype: "local",
+                data: data,
+                colNames: ['IndexName', 'Industry', 'Scores'],
+                colModel: [
+                    { name: 'indexName', key: true, width: 100 },
+                    { name: 'industry', width: 100 },
+                    { name: 'score', width: 100 }
+                ],
+                width: 300,
+                height: 250,
+                rowNum: 20,
+                loadonce: true,
+                grouping: false,
+                emptyrecords: 'No Data Found', // the message will be displayed at the bottom
+                pager: "#jqGridPager"
+            });
+        }
+    </script>
+
+
+    <script src="js/filter.js?bld=<%=ConfigurationManager.AppSettings[" buildno"].ToString() %>"></script>
+    <script src="js/search.js?bld=<%=ConfigurationManager.AppSettings[" buildno"].ToString() %>"></script>
+    <script src="js/bootstrap.bundle.min.js?bld=<%=ConfigurationManager.AppSettings[" buildno"].ToString() %>"></script>
+    <!-- Custom scripts for this template -->
+    <script src="js/resume.min.js?bld=<%=ConfigurationManager.AppSettings[" buildno"].ToString() %>"></script>
+
+
+
+
+
+    <script>
+        $(document).ready(function () {
+            $("#openSidePanel, .left-Side").mouseover(function () {
+                $('#leftSide').css("right", "0px");
+                $('#rightSide').css("padding-right", "300px");
+            });
+
+            $("#openSidePanel, .left-Side").mouseout(function () {
+                if ($("#switchbox").prop('checked') == false) {
+                    $('#leftSide').css("right", "-300px");
+                    $('#rightSide').css("padding-right", "0px");
+                }
+                if ($("#switchbox").prop('checked') == true) {
+                    $('#switchbox').css("right", "0px");
+                    $('#rightSide').css("padding-right", "300px");
+                }
+            });
+
+            $('#switchbox').click(function () {
+                if ($(this).prop('checked') == true) {
+                    $('span#textPinchange').text('Pinned');
+                    $('#openSidePanel').hide();
+                }
+                else {
+                    $('span#textPinchange').text('Unpin');
+                    $('#openSidePanel').show();
+                }
+            })
+        });
+
+
+    </script>
+</body>
+
+</html>
